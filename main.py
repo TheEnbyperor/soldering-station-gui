@@ -4,7 +4,7 @@ import matplotlib
 matplotlib.use('WXAgg')
 import matplotlib.cm as cm
 import matplotlib.cbook as cbook
-from matplotlib.backends.backend_wxagg import Toolbar, FigureCanvasWxAgg
+from matplotlib.backends.backend_wxagg import FigureCanvasWxAgg
 from matplotlib.figure import Figure
 import numpy as np
 
@@ -12,7 +12,6 @@ import wx
 import wx.xrc as xrc
 
 ERR_TOL = 1e-5  # floating point slop for peak-detection
-
 
 matplotlib.rc('image', origin='lower')
 
@@ -23,16 +22,11 @@ class PlotPanel(wx.Panel):
 
         self.fig = Figure((5, 4), 75)
         self.canvas = FigureCanvasWxAgg(self, -1, self.fig)
-        self.toolbar = Toolbar(self.canvas)  # matplotlib toolbar
-        self.toolbar.Realize()
-        # self.toolbar.set_active([0,1])
 
         # Now put all into a sizer
         sizer = wx.BoxSizer(wx.VERTICAL)
         # This way of adding to sizer allows resizing
         sizer.Add(self.canvas, 1, wx.LEFT | wx.TOP | wx.GROW)
-        # Best to allow the toolbar to resize!
-        sizer.Add(self.toolbar, 0, wx.GROW)
         self.SetSizer(sizer)
         self.Fit()
 
@@ -50,13 +44,6 @@ class PlotPanel(wx.Panel):
         if self.im.origin == 'upper':
             ymax_i = z.shape[0] - ymax_i
         self.lines = a.plot(xmax_i, ymax_i, 'ko')
-
-        self.toolbar.update()  # Not sure why this is needed - ADS
-
-    def GetToolBar(self):
-        # You will need to override GetToolBar if you are using an
-        # unmanaged toolbar in your frame
-        return self.toolbar
 
     def OnWhiz(self, evt):
         self.x += np.pi / 15
